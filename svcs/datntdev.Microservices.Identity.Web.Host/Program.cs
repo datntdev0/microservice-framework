@@ -1,29 +1,36 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using datntdev.Microservices.Identity.Web.Host.Data;
+using datntdev.Microservices.ServiceDefaults.Hosting;
 
-namespace datntdev.Microservices.Identity.Web.Host;
+ServiceBootstrapBuilder.Create<Startup>(args).Build().Run();
 
-public class Program
+public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
-    public static void Main(string[] args)
+    public override void ConfigureServices(IServiceCollection services)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        services.AddServiceBootstrap();
 
-        // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+        var connectionString = _hostingConfiguration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddControllersWithViews();
 
-        var app = builder.Build();
+        services.AddControllersWithViews();
+        services.AddDatabaseDeveloperPageExceptionFilter();
+
+        services.AddDefaultOpenTelemetry(_hostingEnvironment, _hostingConfiguration);
+        services.AddDefaultServiceDiscovery();
+    }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseServiceBootstrap();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (env.IsDevelopment())
         {
             app.UseMigrationsEndPoint();
         }
@@ -39,14 +46,11 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapStaticAssets();
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}")
-            .WithStaticAssets();
-        app.MapRazorPages()
-           .WithStaticAssets();
-
-        app.Run();
+        app.UseEndpoints(configure =>
+        {
+            configure.MapStaticAssets();
+            configure.MapRazorPages().WithStaticAssets();
+            configure.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();
+        });
     }
 }
