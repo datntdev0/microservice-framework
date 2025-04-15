@@ -12,4 +12,7 @@
     <Project Path="svcs/datntdev.Microservices.Identity.Contracts/datntdev.Microservices.Identity.Contracts.csproj" />
     <Project Path="svcs/datntdev.Microservices.Identity.Web.Host/datntdev.Microservices.Identity.Web.Host.csproj" />
   </Folder>
+  <Folder Name="/_/" Id="8ec462fd-d22e-90a8-e5ce-7e832ba40c5d">
+    <File Path="common.props" />
+  </Folder>
 </Solution>
