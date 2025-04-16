@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using datntdev.Microservices.Identity.Web.Host.Data;
 using datntdev.Microservices.ServiceDefaults.Hosting;
+using datntdev.Microservices.Identity.Web.Host;
 
 ServiceBootstrapBuilder.Create<Startup>(args).Build().Run();
 
@@ -9,7 +10,7 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.AddServiceBootstrap();
+        services.AddServiceBootstrap<IdentityWebHostModule>();
 
         var connectionString = _hostingConfiguration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\common.props"/>
+    <Import Project="..\..\common.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\datntdev.Microservices.Identity.Contracts\datntdev.Microservices.Identity.Contracts.csproj" />
+    </ItemGroup>
 
 </Project>

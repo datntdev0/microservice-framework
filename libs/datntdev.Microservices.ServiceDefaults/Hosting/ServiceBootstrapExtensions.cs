@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using datntdev.Microservices.Common.Modular;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +13,14 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
 {
     public static class ServiceBootstrapExtensions
     {
-        public static IServiceCollection AddServiceBootstrap(this IServiceCollection services)
+        public static IServiceCollection AddServiceBootstrap<TStartupModule>(this IServiceCollection services) 
+            where TStartupModule : BaseModule
         {
-            services.AddSingleton<ServiceBootstrap>();
+            var startupModuleType = typeof(TStartupModule);
+            var modules = ServiceBootstrap.FindDependedModuleTypes(startupModuleType);
+            services.AddSingleton(services => new ServiceBootstrap(services, typeof(TStartupModule)));
+            services.AddSingleton<TStartupModule>();
+            modules.ToList().ForEach(module => services.AddSingleton(module));
             return services;
         }
 
