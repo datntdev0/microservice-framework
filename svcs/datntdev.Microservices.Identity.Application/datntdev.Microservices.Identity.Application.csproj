@@ -3,7 +3,13 @@
     <Import Project="..\..\common.props" />
 
     <ItemGroup>
-      <ProjectReference Include="..\datntdev.Microservices.Identity.Contracts\datntdev.Microservices.Identity.Contracts.csproj" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\datntdev.Microservices.Identity.Contracts\datntdev.Microservices.Identity.Contracts.csproj" />
     </ItemGroup>
 
 </Project>
