@@ -4,7 +4,7 @@ using datntdev.Microservices.Identity.Web.Host.Data;
 using datntdev.Microservices.ServiceDefaults.Hosting;
 using datntdev.Microservices.Identity.Web.Host;
 
-ServiceBootstrapBuilder.Create<Startup>(args).Build().Run();
+ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
 public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
