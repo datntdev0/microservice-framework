@@ -1,23 +1,33 @@
 ﻿using datntdev.Microservices.Common.Modular;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace datntdev.Microservices.ServiceDefaults.Hosting
 {
-    internal class ServiceBootstrap(IServiceProvider serviceProvider, Type startupModuleType)
+    internal class ServiceBootstrap<TModule> where TModule : BaseModule
     {
-        private readonly Type _startupModuleType = startupModuleType;
-        private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly IEnumerable<BaseModule> _modules = CreateAllModuleInstances();
 
-        public void Initialize()
-        {
-            var modules = GetAllModuleInstances().ToList();
-            modules.ForEach(x => x.PreInitialize());
-            modules.ForEach(x => x.Initialize());
-            modules.ForEach(x => x.PostInitialize());
+        public void ConfigureServices(IServiceCollection services, IConfigurationRoot configs) 
+        { 
+            _modules.ToList().ForEach(module => module.ConfigureServices(services, configs));
         }
 
-        public static IEnumerable<Type> FindDependedModuleTypes(Type moduleType)
+        public void Configure(IServiceProvider serviceProvider, IConfigurationRoot configs) 
+        { 
+            _modules.ToList().ForEach(module => module.Configure(serviceProvider, configs));
+        }
+
+        private static IEnumerable<BaseModule> CreateAllModuleInstances()
+        {
+            return FindDependedModuleTypesRecursively(typeof(TModule))
+                .Append(typeof(TModule))
+                .Select(Activator.CreateInstance)
+                .Select(module => (BaseModule)module!);
+        }
+
+        private static IEnumerable<Type> FindDependedModuleTypesRecursively(Type moduleType)
         {
             if (!moduleType.GetTypeInfo().IsDefined(typeof(DependOnAttribute), true)) return [];
 
@@ -28,17 +38,8 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
                 .Distinct();
 
             return moduleTypes
-                .SelectMany(FindDependedModuleTypes)
+                .SelectMany(FindDependedModuleTypesRecursively)
                 .Concat(moduleTypes);
-        }
-
-        private IEnumerable<BaseModule> GetAllModuleInstances()
-        {
-            var modules = FindDependedModuleTypes(_startupModuleType).Append(_startupModuleType);
-            return modules
-                .Select(_serviceProvider.GetRequiredService)
-                .Where(module => module != null)
-                .Select(module => (BaseModule)module);
         }
     }
 }

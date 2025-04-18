@@ -13,21 +13,19 @@ namespace datntdev.Microservices.ServiceDefaults.Hosting
 {
     public static class ServiceBootstrapExtensions
     {
-        public static IServiceCollection AddServiceBootstrap<TStartupModule>(this IServiceCollection services) 
+        public static IServiceCollection AddServiceBootstrap<TStartupModule>(this IServiceCollection services, IConfigurationRoot configs) 
             where TStartupModule : BaseModule
         {
-            var startupModuleType = typeof(TStartupModule);
-            var modules = ServiceBootstrap.FindDependedModuleTypes(startupModuleType);
-            services.AddSingleton(services => new ServiceBootstrap(services, typeof(TStartupModule)));
-            services.AddSingleton<TStartupModule>();
-            modules.ToList().ForEach(module => services.AddSingleton(module));
-            return services;
+            var bootstrapper = new ServiceBootstrap<TStartupModule>();
+            bootstrapper.ConfigureServices(services, configs);
+            return services.AddSingleton(bootstrapper);
         }
 
-        public static IApplicationBuilder UseServiceBootstrap(this IApplicationBuilder app)
+        public static IApplicationBuilder UseServiceBootstrap<TStartupModule>(this IApplicationBuilder app, IConfigurationRoot configs)
+            where TStartupModule : BaseModule
         {
-            var bootstrapper = app.ApplicationServices.GetRequiredService<ServiceBootstrap>();
-            bootstrapper.Initialize();
+            var bootstrapper = app.ApplicationServices.GetRequiredService<ServiceBootstrap<TStartupModule>>();
+            bootstrapper.Configure(app.ApplicationServices, configs);
             return app;
         }
 

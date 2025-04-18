@@ -10,7 +10,7 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.AddServiceBootstrap<IdentityWebHostModule>();
+        services.AddServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
 
         var connectionString = _hostingConfiguration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -28,7 +28,7 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseServiceBootstrap();
+        app.UseServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
 
         // Configure the HTTP request pipeline.
         if (env.IsDevelopment())

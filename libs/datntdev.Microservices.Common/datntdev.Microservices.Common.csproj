@@ -3,6 +3,8 @@
     <Import Project="..\..\common.props" />
 
     <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.0" />
