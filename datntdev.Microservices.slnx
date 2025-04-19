@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/framework/">
+    <Project Path="libs/datntdev.Microservices.Common/datntdev.Microservices.Common.csproj" />
+    <Project Path="libs/datntdev.Microservices.ServiceDefaults/datntdev.Microservices.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/applications/">
+    <Project Path="apps/datntdev.Microservices.AppHost/datntdev.Microservices.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/services/" />
+  <Folder Name="/services/identity/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
+    <Project Path="svcs/datntdev.Microservices.Identity.Application/datntdev.Microservices.Identity.Application.csproj" Id="be6fbc88-23f4-44cc-a5fe-11ada2694afa" />
+    <Project Path="svcs/datntdev.Microservices.Identity.Contracts/datntdev.Microservices.Identity.Contracts.csproj" />
+    <Project Path="svcs/datntdev.Microservices.Identity.Web.Host/datntdev.Microservices.Identity.Web.Host.csproj" />
+  </Folder>
+  <Folder Name="/_/" Id="8ec462fd-d22e-90a8-e5ce-7e832ba40c5d">
+    <File Path="common.props" />
+  </Folder>
+</Solution>
