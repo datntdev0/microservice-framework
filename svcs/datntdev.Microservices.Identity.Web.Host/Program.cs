@@ -1,5 +1,7 @@
 using datntdev.Microservices.ServiceDefaults.Hosting;
 using datntdev.Microservices.Identity.Web.Host;
+using Microsoft.Extensions.Options;
+using datntdev.Microservices.Identity.Web.Host.Services;
 
 ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
@@ -14,6 +16,7 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 
         services.AddDefaultOpenTelemetry(_hostingEnvironment, _hostingConfiguration);
         services.AddDefaultServiceDiscovery();
+        services.AddHostedService<Worker>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -23,6 +26,7 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
         // Configure the HTTP request pipeline.
         if (env.IsDevelopment())
         {
+            app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
         }
         else
@@ -32,13 +36,18 @@ public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
             app.UseHsts();
         }
 
+        app.UseForwardedHeaders();
         app.UseHttpsRedirection();
         app.UseRouting();
+        app.UseCors();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(configure =>
         {
+            configure.MapControllers();
+            configure.MapDefaultControllerRoute();
             configure.MapStaticAssets();
             configure.MapRazorPages().WithStaticAssets();
             configure.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();

@@ -6,7 +6,7 @@ using System;
 
 namespace datntdev.Microservices.Identity.Web.Host.Data;
 
-internal class ApplicationDbContext : IdentityDbContext<IdentityUserEntity, IdentityRoleEntity, Guid>
+public class ApplicationDbContext : IdentityDbContext<IdentityUserEntity, IdentityRoleEntity, Guid>
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
