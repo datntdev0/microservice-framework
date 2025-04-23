@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace datntdev.Microservices.Identity.Web.Host.Data;
+namespace datntdev.Microservices.Identity.Application.Authorization.Users;
 
 public class ApplicationDbContext : IdentityDbContext<IdentityUserEntity, IdentityRoleEntity, Guid>
 {

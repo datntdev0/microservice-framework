@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using datntdev.Microservices.Identity.Web.Host.Data;
+using datntdev.Microservices.Identity.Application.Authorization.Users;
 
 #nullable disable
 

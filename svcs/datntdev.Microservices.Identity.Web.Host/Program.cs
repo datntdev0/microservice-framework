@@ -1,56 +1,68 @@
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using datntdev.Microservices.Identity.Web.Host.Components;
+using datntdev.Microservices.Identity.Web.Host.Components.Account;
 using datntdev.Microservices.ServiceDefaults.Hosting;
 using datntdev.Microservices.Identity.Web.Host;
-using Microsoft.Extensions.Options;
-using datntdev.Microservices.Identity.Web.Host.Services;
+using datntdev.Microservices.Identity.Application.Authorization.Users;
 
 ServiceBootstrapBuilder.CreateWebApplication<Startup>(args).Run();
 
-public class Startup(IWebHostEnvironment env) : ServiceStartup(env)
+internal class Startup(IWebHostEnvironment env) : ServiceStartup(env)
 {
     public override void ConfigureServices(IServiceCollection services)
     {
         services.AddServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
 
-        services.AddControllersWithViews();
+        services.AddRazorComponents()
+            .AddInteractiveServerComponents();
+
+        services.AddCascadingAuthenticationState();
+        services.AddScoped<IdentityUserAccessor>();
+        services.AddScoped<IdentityRedirectManager>();
+        services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        }).AddIdentityCookies();
+
         services.AddDatabaseDeveloperPageExceptionFilter();
 
-        services.AddDefaultOpenTelemetry(_hostingEnvironment, _hostingConfiguration);
-        services.AddDefaultServiceDiscovery();
-        services.AddHostedService<Worker>();
+        services.AddSingleton<IEmailSender<IdentityUserEntity>, IdentityNoOpEmailSender>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseServiceBootstrap<IdentityWebHostModule>(_hostingConfiguration);
 
+
         // Configure the HTTP request pipeline.
         if (env.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
             app.UseMigrationsEndPoint();
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
-        app.UseForwardedHeaders();
         app.UseHttpsRedirection();
         app.UseRouting();
-        app.UseCors();
+
+        app.UseAntiforgery();
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(configure =>
         {
-            configure.MapControllers();
-            configure.MapDefaultControllerRoute();
+            configure.MapAdditionalIdentityEndpoints();
+            configure.MapRazorComponents<App>().AddInteractiveServerRenderMode();
             configure.MapStaticAssets();
-            configure.MapRazorPages().WithStaticAssets();
-            configure.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();
         });
     }
 }

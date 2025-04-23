@@ -1,7 +1,7 @@
 ﻿using datntdev.Microservices.Common.Modular;
 using datntdev.Microservices.Identity.Application.Authorization.Users;
 using datntdev.Microservices.Identity.Contracts;
-using datntdev.Microservices.Identity.Web.Host.Data;
+using datntdev.Microservices.Identity.Application.Authorization.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -58,8 +58,9 @@ namespace datntdev.Microservices.Identity.Application
                  });
 
             // Add Identity services
-            services.AddDefaultIdentity<IdentityUserEntity>()
+            services.AddIdentityCore<IdentityUserEntity>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddSignInManager()
                 .AddDefaultTokenProviders();
         }
     }

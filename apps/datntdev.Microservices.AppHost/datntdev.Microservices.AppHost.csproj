@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\common.props"/>
+    <Import Project="..\..\common.props" />
 
     <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\svcs\datntdev.Microservices.Identity.Web.Host\datntdev.Microservices.Identity.Web.Host.csproj" />
+      <ProjectReference Include="..\..\svcs\datntdev.Microservices.Identity.Web.Host\datntdev.Microservices.Identity.Web.Host.csproj" />
     </ItemGroup>
 
 </Project>
