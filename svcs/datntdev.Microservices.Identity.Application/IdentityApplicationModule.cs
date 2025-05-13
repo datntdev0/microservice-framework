@@ -1,7 +1,6 @@
 ﻿using datntdev.Microservices.Common.Modular;
 using datntdev.Microservices.Identity.Application.Authorization.Users;
 using datntdev.Microservices.Identity.Contracts;
-using datntdev.Microservices.Identity.Application.Authorization.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

@@ -1,0 +1,13 @@
+{
+  "name": "microservices.themes",
+  "version": "0.0.0",
+  "description": "NPM tools to build theme bundles",
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "author": "datntdev@outlook.com",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^5.0.0"
+  }
+}
